@@ -1,0 +1,7 @@
+CREATE DATABASE EmployeeTracker;
+USE EmployeeTracker;
+
+CREATE TABLE department (
+    id INTEGER AUTO_INCREMENT NOT NULL UNIQUE PRIMARY KEY,
+    name VARCHAR(30) NOT NULL
+);
