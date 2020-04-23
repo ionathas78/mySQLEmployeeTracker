@@ -28,24 +28,22 @@ function encryptPassword(employeeId, stringToEncrypt) {
 };
 
 /**
- * Check entered password; run one function on a pass or a diffrent one on a fail
+ * Check entered password; run one function on a pass or a different one on a fail
  * @param {Number} employeeId employee ID
  * @param {Text} userPassword entered password to compare
- * @param {Function} passFunction function to run on successful validation
- * @param {Function} failFunction function to run if validation fails
+ * @param {Function} callbackFunction two-parameter function (error, response) to return upon completion
  */
-function validatePassword(employeeId, userPassword, passFunction, failFunction) {
+function validatePassword(employeeId, userPassword, callbackFunction) {
     let sql = `SELECT password FROM employees WHERE id = '${employeeId}';`
     connection.query(sql, (err, res) => {
         if (err) throw err;
+        if (!res[0]) {
+            //      Just in case we're testing against an invalid user here...
+            callbackFunction(err, false);
+        };
         bcrypt
             .compare(userPassword, res[0].password, (err, res) => {
-                if (err) throw err;
-                if (res) {
-                    passFunction();
-                } else {
-                    failFunction();
-                };
+                callbackFunction(err, res);
             });
     });
 };

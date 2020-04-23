@@ -54,6 +54,7 @@ function selectQuery(tableName, fieldNames = null, whereClause = null, orderBy =
     };
 };
 
+
 /**
  * Query Connection to update records
  * @param {Text} tableName Table to query
@@ -67,15 +68,17 @@ function updateQuery(tableName, setClause, whereClause) {
     };
     sql += ";";
     
+    // console.log(sql, setClause, whereClause);
+
     if (whereClause) {
         connection.query(sql, [setClause, whereClause], (err, res) => {
             if (err) throw err;
-            console.log("updated " + res.length + " row(s).");
+            // console.log("updated " + res.length + " row(s).");
         });
     } else {
         connection.query(sql, setClause, (err, res) => {
             if (err) throw err;
-            console.log("updated " + res.length + " row(s).");
+            // console.log("updated " + res.length + " row(s).");
         });
     };
 };

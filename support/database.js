@@ -1,8 +1,6 @@
-const orm = require("./support/orm.js");
+const orm = require("./orm.js");
 
 module.exports = {
-
-// Build a command-line application that at a minimum allows the user to:
 
 //   * Add departments, roles, employees
 

@@ -49,6 +49,7 @@
      id INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
      user_name VARCHAR(63) NOT NULL UNIQUE,
      password VARCHAR(63) NULL,
+     access INTEGER(3) NULL DEFAULT 0,
      first_name VARCHAR(31) NULL,
      last_name VARCHAR(31) NULL,
      role_id INTEGER NULL,
