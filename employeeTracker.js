@@ -2,21 +2,27 @@ const inquirer = require("inquirer");
 
 const support = require("./support/");
 
+//          Access levels for administrative menus
 const EmployeeAccess = {
-    UNAUTHORIZED: -1,
-    UNDEFINED: 0,
-    USER: 1,
-    SUPERUSER: 2,
-    MANAGER: 3,
-    ADMIN: 4
+        UNAUTHORIZED: -1,
+        UNDEFINED: 0,
+        USER: 1,
+        SUPERUSER: 2,
+        MANAGER: 3,
+        ADMINISTRATOR: 4
 };
 Object.freeze(EmployeeAccess);
 
-const _user = {
-    id: -1,
-    access: -1,
-    firstName: ""
+//          Current login information
+const User = function() {
+    this.id = -1;
+    this.access = -1;
+    this.name = ""
 };
+
+const _user = new User();
+
+//          Program settings
 const _INFORM_ONINVALIDUSER = true;
 const _PASSWORD_MINLENGTH = 8;
 const _PASSWORD_MAXLENGTH = 32;
@@ -26,7 +32,8 @@ const _PASSWORD_REQUIRESNUMBER = true;
 const _PASSWORD_REQUIRESSPECIAL = true;
 
 /**
- * Initial user prompt
+ * Initial user prompt. Gets Username and stats from DB.
+ *   On a blank entry, uses a guest login.
  */
 function getUserName() {
     let props = {
@@ -41,9 +48,9 @@ function getUserName() {
             if (!res.userName) {
                 _user.id = -1;
                 _user.access = 1;
-                _user.firstName = "guest";
-                Object.freeze(_user);
-                support.ux.startMenu(_user);
+                _user.name = "guest";
+                // Object.freeze(_user);
+                support.ux.startMenu(_user, EmployeeAccess);
 
             } else {
                 support.connection.query(`SELECT id, password, access, first_name FROM employees WHERE user_name = '${res.userName}'`, function (err, data) {
@@ -62,7 +69,7 @@ function getUserName() {
 
                     _user.id = data[0].id;
                     _user.access = data[0].access;
-                    _user.firstName = data[0].first_name;
+                    _user.name = data[0].first_name;
 
                     if (!data[0].password) {
                         setNewPassword();
@@ -77,6 +84,11 @@ function getUserName() {
         });
 };
 
+/**
+ * If no password exists in the DB, prompts user for a new password.
+ *   If password confirms and meets security requirements, updates the DB, and moves ahead with UX.
+ *   Otherwise, loops the request.
+ */
 function setNewPassword() {
     let props0 = {
         type: "password",
@@ -133,13 +145,18 @@ function setNewPassword() {
                 } else {
                     let hash = support.encryption.encryptPassword(_user.id, res.userPass0);
                     console.log("Password updated!");
-                    Object.freeze(_user);
-                    support.ux.startMenu(_user);
+                    // Object.freeze(_user);
+                    support.ux.startMenu(_user, EmployeeAccess);
                 };
             }
         })
 };
 
+/**
+ * If the DB contains a password, asks the user to enter it.
+ *   If successful, freezes user data and moves ahead with UX.
+ *   If failed, returns to getUsername().
+ */
 function validatePassword() {
     let props = {
         type: "password",
@@ -164,19 +181,32 @@ function validatePassword() {
                     };
 
                     _user.id = -1;
-                    _user.firstName = "";
+                    _user.name = "";
                     _user.access = -1;
 
                     getUserName();
 
                 } else {
-                    Object.freeze(_user);
-                    support.ux.startMenu(_user);
+                    // Object.freeze(_user);
+                    support.ux.startMenu(_user, EmployeeAccess);
                 };
             });
+        });
+};
 
-        })
-}
+function logoff() {
+    console.log("Logging " + _user.firstName + " out...");
+    _user.id = -1;
+    _user.name = "";
+    _user.access = -1;
+    getUserName();
+};
+
+function exitTracker() {
+    console.log("Have a nice day!");
+    support.connection.end();
+};
+
+module.exports = { logoff, exitTracker }
 
 getUserName();
-

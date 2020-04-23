@@ -7,25 +7,31 @@ module.exports = { addQuery, selectQuery, updateQuery, deleteQuery, selectJoinQu
  * Query Connection to add a record
  * @param {Text} tableName Table to update
  * @param {Object} values fieldName: value pairs
+ * @param {Function} callbackFunction Function to call after the query is resolved, or NULL if none.
  */
-function addQuery(tableName, values) {
+function addQuery(tableName, values, callbackFunction = null) {
     let sql = `INSERT INTO ${tableName} SET ?`;
     connection.query(sql, values, (err, res) => {
         if (err) throw err;
         // console.log(res);
-        return true;
+        if (callbackFunction) {
+            callbackFunction();
+        } else {
+            return true;
+        };
     });
 };
 
 /**
  * Query Connection to select records
  * @param {Text} tableName Table to query
+ * @param {Function} callbackFunction Function to call after the query is resolved, or NULL if none.
  * @param {Array} fieldNames Field Names to query (or null for *)
  * @param {Object} whereClause Conditions as {fieldName: value}
  * @param {Text} orderBy Order By Field (or null for none)
  * @param {Boolean} orderAsc Order Ascending
  */
-function selectQuery(tableName, fieldNames = null, whereClause = null, orderBy = null, orderAsc = true) {
+function selectQuery(tableName, callbackFunction = null, fieldNames = null, whereClause = null, orderBy = null, orderAsc = true) {
     let sql = `SELECT `;
     if (!fieldNames) {
         sql += "*";
@@ -36,20 +42,29 @@ function selectQuery(tableName, fieldNames = null, whereClause = null, orderBy =
     if (whereClause) {
         sql += " WHERE ?";
     };
-    if (orderBy) {
+    if (orderBy !== null) {
         sql += " ORDER BY " + orderBy + " " + (orderAsc ? "ASC" : "DESC")
     };
     sql += ";";
 
+    console.clear();
     if (!whereClause) {
         connection.query(sql, (err, res) => {
             if (err) throw err;
             console.table(res);
+
+            if (callbackFunction) {
+                callbackFunction();
+            };
         });
     } else if (whereClause) {
         connection.query(sql, whereClause, (err, res) => {
             if (err) throw err;
             console.table(res);
+
+            if (callbackFunction) {
+                callbackFunction();
+            };
         });
     };
 };
@@ -60,8 +75,9 @@ function selectQuery(tableName, fieldNames = null, whereClause = null, orderBy =
  * @param {Text} tableName Table to query
  * @param {Object} setClause Values to set as { fieldName: value }
  * @param {Object} whereClause Conditions as { fieldName: value }
+ * @param {Function} callbackFunction Function to call after the query is resolved, or NULL if none.
  */
-function updateQuery(tableName, setClause, whereClause) {
+function updateQuery(tableName, setClause, whereClause, callbackFunction = null) {
     let sql = `UPDATE ${tableName} SET ?`;
     if (whereClause) {
         sql += " WHERE ?"
@@ -74,11 +90,19 @@ function updateQuery(tableName, setClause, whereClause) {
         connection.query(sql, [setClause, whereClause], (err, res) => {
             if (err) throw err;
             // console.log("updated " + res.length + " row(s).");
+            if (callbackFunction) {
+                callbackFunction();
+            };
+
         });
     } else {
         connection.query(sql, setClause, (err, res) => {
             if (err) throw err;
             // console.log("updated " + res.length + " row(s).");
+            if (callbackFunction) {
+                callbackFunction();
+            };
+
         });
     };
 };
@@ -87,8 +111,9 @@ function updateQuery(tableName, setClause, whereClause) {
  * Query connection to delete rows
  * @param {Text} tableName Table to query
  * @param {Object} whereClause { fieldName: value } conditions
+ * @param {Function} callbackFunction Function to call after the query is resolved, or NULL if none.
  */
-function deleteQuery(tableName, whereClause) {
+function deleteQuery(tableName, whereClause, callbackFunction = null) {
     let sql = `DELETE FROM ${tableName}`;
     if (whereClause) {
         sql += " WHERE ?";
@@ -98,12 +123,18 @@ function deleteQuery(tableName, whereClause) {
     if (!whereClause) {
         connection.query(sql, (err, res) => {
             if (err) throw err;
-            console.log("removed " + res.length + " row(s).");
+            // console.log("removed " + res.length + " row(s).");
+            if (callbackFunction) {
+                callbackFunction();
+            };
         });
     } else {
         connection.query(sql, whereClause, (err, res) => {
             if (err) throw err;
-            console.log("removed " + res.length + " row(s).");
+            // console.log("removed " + res.length + " row(s).");
+            if (callbackFunction) {
+                callbackFunction();
+            };
         });
     };
 };
@@ -112,13 +143,14 @@ function deleteQuery(tableName, whereClause) {
 /**
  * Query Connection to select records
  * @param {Text} tableName Table to query
+ * @param {Function} callbackFunction Function to call after the query is resolved, or NULL if none.
  * @param {Array} fieldNames Field Names to query (or null for *)
  * @param {Object} whereClause Conditions as {fieldName: value}
  * @param {Text} orderBy Order By Field (or null for none)
  * @param {Boolean} orderAsc Order Ascending
  * @param {Object} joinData Join details in the form of { joinTable: x, joinAlias: x', tableField: y, joinField: z }
  */
-function selectJoinQuery(tableName, fieldNames = null, whereClause = null, orderBy = null, orderAsc = true, ...joinData) {
+function selectJoinQuery(tableName, callbackFunction = null, fieldNames = null, whereClause = null, orderBy = null, orderAsc = true, ...joinData) {
     let sql = `SELECT `;
     if (!fieldNames) {
         sql += "*";
@@ -142,15 +174,24 @@ function selectJoinQuery(tableName, fieldNames = null, whereClause = null, order
     };
     sql += ";";
 
+    console.clear();
+    // console.log(sql);
+    // console.log(whereClause);
     if (!whereClause) {
         connection.query(sql, (err, res) => {
             if (err) throw err;
             console.table(res);
+            if (callbackFunction) {
+                callbackFunction();
+            };
         });
     } else if (whereClause) {
         connection.query(sql, whereClause, (err, res) => {
             if (err) throw err;
             console.table(res);
+            if (callbackFunction) {
+                callbackFunction();
+            };
         });
     };
 };
@@ -159,12 +200,13 @@ function selectJoinQuery(tableName, fieldNames = null, whereClause = null, order
  * 
  * @param {Text} tableName Table to query
  * @param {Array} fieldNames Field Names and functions to query
+ * @param {Function} callbackFunction Function to call after the query is resolved, or NULL if none.
  * @param {Object} whereClause Conditions as { fieldName: value }
  * @param {Object} havingClause Aggregate Conditions as { fieldName: value }
  * @param {Text} orderBy Order By field (or null for none)
  * @param {Boolean} orderAsc Order Ascending
  */
-function aggregateQuery(tableName, fieldNames, whereClause = null, havingClause = null, orderBy = null, orderAsc = true) {
+function aggregateQuery(tableName, fieldNames, callbackFunction = null, whereClause = null, havingClause = null, orderBy = null, orderAsc = true) {
     let sql = `SELECT `;
     if (!fieldNames) {
         sql += "*";
@@ -183,25 +225,38 @@ function aggregateQuery(tableName, fieldNames, whereClause = null, havingClause 
     };
     sql += ";";
 
+    console.clear();
     if (!whereClause && !havingClause) {
         connection.query(sql, (err, res) => {
             if (err) throw err;
             console.table(res);
+            if (callbackFunction) {
+                callbackFunction();
+            };
         });
     } else if (whereClause && !havingClause) {
         connection.query(sql, whereClause, (err, res) => {
             if (err) throw err;
             console.table(res);
+            if (callbackFunction) {
+                callbackFunction();
+            };
         });
     } else if (!whereClause && havingClause) {
         connection.query(sql, havingClause, (err, res) => {
             if (err) throw err;
             console.table(res);
+            if (callbackFunction) {
+                callbackFunction();
+            };
         });
     } else {
         connection.query(sql, [whereClause, havingClause], (err, res) => {
             if (err) throw err;
             console.table(res);
+            if (callbackFunction) {
+                callbackFunction();
+            };
         });
     };
 }
@@ -212,13 +267,14 @@ function aggregateQuery(tableName, fieldNames, whereClause = null, havingClause 
  * 
  * @param {Text} tableName Table to query
  * @param {Array} fieldNames Field Names and functions to query
+ * @param {Function} callbackFunction Function to call after the query is resolved, or NULL if none.
  * @param {Object} whereClause Conditions as { fieldName: value }
  * @param {Object} havingClause Aggregate Conditions as { fieldName: value }
  * @param {Text} orderBy Order By field (or null for none)
  * @param {Boolean} orderAsc Order Ascending
  * @param {Object} joinData Join details in the form of { joinTable: x, joinAlias: x', tableField: y, joinField: z }
  */
-function aggregateJoinQuery(tableName, fieldNames, whereClause = null, havingClause = null, orderBy = null, orderAsc = true, ...joinData) {
+function aggregateJoinQuery(tableName, fieldNames, callbackFunction = null, whereClause = null, havingClause = null, orderBy = null, orderAsc = true, ...joinData) {
     let sql = `SELECT `;
     if (!fieldNames) {
         sql += "*";
@@ -245,27 +301,40 @@ function aggregateJoinQuery(tableName, fieldNames, whereClause = null, havingCla
     };
     sql += ";";
 
+    console.clear();
     if (!whereClause && !havingClause) {
         connection.query(sql, (err, res) => {
             if (err) throw err;
             console.table(res);
+            if (callbackFunction) {
+                callbackFunction();
+            };
         });
     } else if (whereClause && !havingClause) {
         connection.query(sql, whereClause, (err, res) => {
             if (err) throw err;
             console.table(res);
+            if (callbackFunction) {
+                callbackFunction();
+            };
         });
     } else if (!whereClause && havingClause) {
         connection.query(sql, havingClause, (err, res) => {
             if (err) throw err;
             console.table(res);
+            if (callbackFunction) {
+                callbackFunction();
+            };
         });
     } else {
         connection.query(sql, [whereClause, havingClause], (err, res) => {
             if (err) throw err;
             console.table(res);
+            if (callbackFunction) {
+                callbackFunction();
+            };
         });
     };
-}
+};
 
 

@@ -4,25 +4,25 @@ module.exports = {
 
 //   * Add departments, roles, employees
 
-    addDepartment: function(departmentName) {
+    addDepartment: function(departmentName, callbackFunction = null) {
         let tableName = "departments";
         let values = {
             name: departmentName
         };
-        orm.addQuery(tableName, values);
+        orm.addQuery(tableName, values, callbackFunction);
     },
 
-    addRole: function(roleTitle, salary, departmentId) {
+    addRole: function(roleTitle, salary, departmentId, callbackFunction = null) {
         let tableName = "roles";
         let values = {
             title: roleTitle,
             salary: salary,
             department_id: departmentId
         };
-        orm.addQuery(tableName, values);
+        orm.addQuery(tableName, values, callbackFunction);
     },
 
-    addEmployee: function(userName, firstName, lastName, roleId, managerId) {
+    addEmployee: function(userName, firstName, lastName, roleId, managerId, callbackFunction = null) {
         let tableName = "employees";
         let values = {
             user_name: userName,
@@ -31,29 +31,29 @@ module.exports = {
             role_id: roleId,
             manager_id: managerId
         };
-        orm.addQuery(tableName, values);
+        orm.addQuery(tableName, values, callbackFunction);
     },
 
 //   * View departments, roles, employees
 
-    reportDepartments: function() {
+    reportDepartments: function(callbackFunction = null) {
         let tableName = "departments";
-        let fieldNames = "name";
-        orm.selectQuery(tableName, fieldNames);
+        let fieldNames = ["name AS department"];
+        orm.selectQuery(tableName, callbackFunction, fieldNames);
     },
 
-    reportRoles: function() {
+    reportRoles: function(callbackFunction = null) {
         let tableName = "roles";
         let joinData = {
                 joinTable: "departments",
                 tableField: "department_id",
                 joinField: "id"
             };
-        let fieldNames = ["title", "salary", "departments.name AS department"];
-        orm.selectJoinQuery(tableName, fieldNames, null, joinData);
+        let fieldNames = ["title AS role", "salary", "departments.name AS department"];
+        orm.selectJoinQuery(tableName, callbackFunction, fieldNames, null, null, true, joinData);
     },
 
-    reportEmployees: function() {
+    reportEmployees: function(callbackFunction = null) {
         let tableName = "employees";
         let primaryJoinData = {
                 joinTable: "roles",
@@ -67,12 +67,12 @@ module.exports = {
                 joinField: "id"
             };
         let fieldNames = ["employees.user_name", "employees.first_name", "employees.last_name", "roles.title AS role", "managers.id AS manager"];
-        orm.selectJoinQuery(tableName, fieldNames, null, null, true, primaryJoinData, secondaryJoinData);
+        orm.selectJoinQuery(tableName, callbackFunction, fieldNames, null, null, true, primaryJoinData, secondaryJoinData);
     },
 
 //   * Update employee roles
 
-    updateEmployeeRole: function(employeeId, newRole) {
+    updateEmployeeRole: function(employeeId, newRole, callbackFunction = null) {
         let tableName = "employees";
         let setClause = {
             role_id: newRole
@@ -80,14 +80,14 @@ module.exports = {
         let whereClause = {
             id: employeeId
         };
-        orm.updateQuery(tableName, setClause, whereClause);
+        orm.updateQuery(tableName, setClause, whereClause, callbackFunction);
     },
 
 // Bonus points if you're able to:
 
 //   * Update employee managers
 
-    updateEmployeeManager: function (employeeId, newManager) {
+    updateEmployeeManager: function (employeeId, newManager, callbackFunction = null) {
         let tableName = "employees";
         let setClause = {
             manager_id: newManager
@@ -95,12 +95,12 @@ module.exports = {
         let whereClause = {
             id: employeeId
         };
-        orm.updateQuery(tableName, setClause, whereClause);
+        orm.updateQuery(tableName, setClause, whereClause, callbackFunction);
     },
 
 //   * View employees by manager
 
-    reportEmployeesByManager: function(managerId) {
+    reportEmployeesByManager: function(managerId, callbackFunction = null) {
         let tableName = "employees";
         let primaryJoinData = {
                 joinTable: "roles",
@@ -113,42 +113,42 @@ module.exports = {
                 tableField: "manager_id",
                 joinField: "id"
             };
-        let fieldNames = ["employees.user_name", "employees.first_name", "employees.last_name", "roles.title AS role", "managers.id AS manager"];
+        let fieldNames = ["employees.first_name", "employees.last_name", "roles.title AS role", "Concat(managers.first_name, ' ', managers.last_name) AS manager"];
         let whereClause = {
             "employees.manager_id": managerId
         };
-        orm.selectJoinQuery(tableName, fieldNames, whereClause, null, true, primaryJoinData, secondaryJoinData);
+        orm.selectJoinQuery(tableName, callbackFunction, fieldNames, whereClause, null, true, primaryJoinData, secondaryJoinData);
     },
 
 //   * Delete departments, roles, and employees
 
-    deleteDepartment: function(departmentId) {
+    deleteDepartment: function(departmentId, callbackFunction = null) {
         let tableName = "departments";
         let whereClause = {
             id: departmentId
         };
-        orm.deleteQuery(tableName, whereClause);
+        orm.deleteQuery(tableName, whereClause, callbackFunction);
     },
 
-    deleteRole: function(roleId) {
+    deleteRole: function(roleId, callbackFunction = null) {
         let tableName = "roles";
         let whereClause = {
             id: roleId
         };
-        orm.deleteQuery(tableName, whereClause);
+        orm.deleteQuery(tableName, whereClause, callbackFunction);
     },
 
-    deleteEmployee: function(employeeId) {
+    deleteEmployee: function(employeeId, callbackFunction = null) {
         let tableName = "employees";
         let whereClause = {
             id: employeeId
         };
-        orm.deleteQuery(tableName, whereClause);
+        orm.deleteQuery(tableName, whereClause, callbackFunction);
     },
 
 //   * View the total utilized budget of a department -- ie the combined salaries of all employees in that department
 
-    sumSalariesByDepartment: function(departmentId) {
+    sumSalariesByDepartment: function(departmentId, callbackFunction = null) {
         let tableName = "employees";
         let primaryJoinData = {
                 joinTable: "roles",
@@ -159,6 +159,6 @@ module.exports = {
         let whereClause = {
             "roles.department_id": departmentId
         };
-        orm.aggregateJoinQuery(tableName, fieldNames, whereClause, null, null, true, primaryJoinData);
+        orm.aggregateJoinQuery(tableName, fieldNames, callbackFunction, whereClause, null, null, true, primaryJoinData);
     }
 };
