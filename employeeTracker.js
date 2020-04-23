@@ -25,7 +25,9 @@ const _PASSWORD_REQUIRESUPPERCASE = true;
 const _PASSWORD_REQUIRESNUMBER = true;
 const _PASSWORD_REQUIRESSPECIAL = true;
 
-
+/**
+ * Initial user prompt
+ */
 function getUserName() {
     let props = {
         type: "input",
@@ -36,30 +38,39 @@ function getUserName() {
     inquirer
         .prompt(props)
         .then(function (res) {
-            support.connection.query(`SELECT id, password, access, first_name FROM employees WHERE user_name = '${res.userName}'`, function (err, res) {
-                if (err) throw err;
-                // console.log(res);
+            if (!res.userName) {
+                _user.id = -1;
+                _user.access = 1;
+                _user.firstName = "guest";
+                Object.freeze(_user);
+                support.ux.startMenu(_user);
 
-                if (!res[0]) {
-                    //  username doesn't exist in DB. For security reasons, it would be better to go ahead to the password as if everything were fine.
-                    if (_INFORM_ONINVALIDUSER) {
-                        console.log("Invalid user name!");
-                        getUserName();
+            } else {
+                support.connection.query(`SELECT id, password, access, first_name FROM employees WHERE user_name = '${res.userName}'`, function (err, data) {
+                    if (err) throw err;
+                    // console.log(res);
+                    
+                    if (!data[0]) {
+                        //  username doesn't exist in DB. For security reasons, it would be better to go ahead to the password as if everything were fine.
+                        if (_INFORM_ONINVALIDUSER) {
+                            console.log("Invalid user name!");
+                            getUserName();
+                        } else {
+                            validatePassword();
+                        };
+                    };
+
+                    _user.id = data[0].id;
+                    _user.access = data[0].access;
+                    _user.firstName = data[0].first_name;
+
+                    if (!data[0].password) {
+                        setNewPassword();
                     } else {
                         validatePassword();
                     };
-                };
-
-                _user.id = res[0].id;
-                _user.access = res[0].access;
-                _user.firstName = res[0].first_name;
-
-                if (!res[0].password) {
-                    setNewPassword();
-                } else {
-                    validatePassword();
-                };
-            });
+                });
+            };
         })
         .catch(function (err) {
             throw err;
