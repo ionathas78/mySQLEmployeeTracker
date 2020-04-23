@@ -61,14 +61,14 @@ function selectQuery(tableName, fieldNames = null, whereClause = null, orderBy =
  * @param {Object} whereClause Conditions as { fieldName: value }
  */
 function updateQuery(tableName, setClause, whereClause) {
-    let sql = "UPDATE ?";
-    if (!whereClause) {
+    let sql = `UPDATE ${tableName} SET ?`;
+    if (whereClause) {
         sql += " WHERE ?"
     };
     sql += ";";
     
     if (whereClause) {
-        connection.query(sql, setClause, whereClause, (err, res) => {
+        connection.query(sql, [setClause, whereClause], (err, res) => {
             if (err) throw err;
             console.log("updated " + res.length + " row(s).");
         });
@@ -196,7 +196,7 @@ function aggregateQuery(tableName, fieldNames, whereClause = null, havingClause 
             console.table(res);
         });
     } else {
-        connection.query(sql, whereClause, havingClause, (err, res) => {
+        connection.query(sql, [whereClause, havingClause], (err, res) => {
             if (err) throw err;
             console.table(res);
         });
@@ -258,7 +258,7 @@ function aggregateJoinQuery(tableName, fieldNames, whereClause = null, havingCla
             console.table(res);
         });
     } else {
-        connection.query(sql, whereClause, havingClause, (err, res) => {
+        connection.query(sql, [whereClause, havingClause], (err, res) => {
             if (err) throw err;
             console.table(res);
         });
