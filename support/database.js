@@ -22,14 +22,15 @@ module.exports = {
         orm.addQuery(tableName, values, callbackFunction);
     },
 
-    addEmployee: function(userName, firstName, lastName, roleId, managerId, callbackFunction = null) {
+    addEmployee: function(userName, firstName, lastName, roleId, managerId, accessLevel, callbackFunction = null) {
         let tableName = "employees";
         let values = {
             user_name: userName,
             first_name: firstName,
             last_name: lastName,
             role_id: roleId,
-            manager_id: managerId
+            manager_id: managerId,
+            access: accessLevel
         };
         orm.addQuery(tableName, values, callbackFunction);
     },

@@ -16,8 +16,6 @@ function addQuery(tableName, values, callbackFunction = null) {
         // console.log(res);
         if (callbackFunction) {
             callbackFunction();
-        } else {
-            return true;
         };
     });
 };

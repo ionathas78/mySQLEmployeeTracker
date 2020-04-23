@@ -28,5 +28,5 @@ INSERT INTO employees (id, user_name, access, first_name, last_name, role_id, ma
             (7, "chapel", 1, "Christine", "Chapel", 8, 3),
             (8, "rand", 1, "Janice", "Rand", 9, 1),
             (9, "scotty", 3, "Montgomery", "Scott", 10, 1),
-            (10, "admin", 4, "Cornelius", "Landru", 11, null),
+            (10, "admin", 4, "Cornelius", "Landru", 11, null)
             

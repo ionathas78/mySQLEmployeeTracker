@@ -17,7 +17,12 @@ Object.freeze(EmployeeAccess);
 const User = function() {
     this.id = -1;
     this.access = -1;
-    this.name = ""
+    this.name = "";
+    this.init = function() {
+        this.id = -1;
+        this.access = -1;
+        this.name = "";
+    }
 };
 
 const _user = new User();
@@ -36,6 +41,9 @@ const _PASSWORD_REQUIRESSPECIAL = true;
  *   On a blank entry, uses a guest login.
  */
 function getUserName() {
+    console.clear();
+    _user.init();
+
     let props = {
         type: "input",
         name: "userName",
@@ -49,7 +57,6 @@ function getUserName() {
                 _user.id = -1;
                 _user.access = 1;
                 _user.name = "guest";
-                // Object.freeze(_user);
                 support.ux.startMenu(_user, EmployeeAccess);
 
             } else {
@@ -108,34 +115,30 @@ function setNewPassword() {
                 console.log("Passwords must match!");
                 setNewPassword();
             } else {
-                //          Admittedly, it'd be nice to have some password strength evaluation here...
-
                 const isSecure = () => {   
                     let returnValue = false;
 
-                    let testValue = res.userPass0;
-                    // console.log(testValue);
-                    // console.log(testValue.split("").filter(letter => letter.match(/[0-9]/)).length);
-                    // console.log(testValue.split("").filter(letter => letter.match(/[a-z]/)).length);
-                    // console.log(testValue.split("").filter(letter => letter.match(/[A-Z]/)).length);
-                    // console.log(testValue.split("").filter(letter => letter.match(/[!@#$%^&*-+=]/)).length);
+                    // console.log(res.userPass0);
+                    // console.log(res.userPass0.split("").filter(letter => letter.match(/[0-9]/)).length);
+                    // console.log(res.userPass0.split("").filter(letter => letter.match(/[a-z]/)).length);
+                    // console.log(res.userPass0.split("").filter(letter => letter.match(/[A-Z]/)).length);
+                    // console.log(res.userPass0.split("").filter(letter => letter.match(/[!@#$%^&*-+=]/)).length);
 
                     if (res.userPass0.length < _PASSWORD_MINLENGTH) {
                         console.log("Password must have " + _PASSWORD_MINLENGTH + " characters!");
-                    } else if ((_PASSWORD_MAXLENGTH > _PASSWORD_MINLENGTH) && (testValue.length > _PASSWORD_MAXLENGTH)) {
+                    } else if ((_PASSWORD_MAXLENGTH > _PASSWORD_MINLENGTH) && (res.userPass0.length > _PASSWORD_MAXLENGTH)) {
                         console.log("Password cannot be more than " + _PASSWORD_MAXLENGTH + " characters!");
-                    } else if (_PASSWORD_REQUIRESNUMBER && !(testValue.split("").filter(letter => letter.match(/[0-9]/)).length > 0)) {
+                    } else if (_PASSWORD_REQUIRESNUMBER && !(res.userPass0.split("").filter(letter => letter.match(/[0-9]/)).length > 0)) {
                         console.log("Password must have one or more numbers (0-9)!");
-                    } else if (_PASSWORD_REQUIRESLOWERCASE && !(testValue.split("").filter(letter => letter.match(/[a-z]/)).length > 0)) {
+                    } else if (_PASSWORD_REQUIRESLOWERCASE && !(res.userPass0.split("").filter(letter => letter.match(/[a-z]/)).length > 0)) {
                         console.log("Password requires lowercase letters!");
-                    } else if (_PASSWORD_REQUIRESUPPERCASE && !(testValue.split("").filter(letter => letter.match(/[A-Z]/)).length > 0)) {
+                    } else if (_PASSWORD_REQUIRESUPPERCASE && !(res.userPass0.split("").filter(letter => letter.match(/[A-Z]/)).length > 0)) {
                         console.log("Password requires uppercase letters!");
-                    } else if (_PASSWORD_REQUIRESSPECIAL && !(testValue.split("").filter(letter => letter.match(/[!@#$%^&*-+=]/)).length > 0)) {
+                    } else if (_PASSWORD_REQUIRESSPECIAL && !(res.userPass0.split("").filter(letter => letter.match(/[!@#$%^&*-+=]/)).length > 0)) {
                         console.log("Password requires one or more special characters (!@#$%^&*-+=)!");
                     } else {
                         returnValue = true;
                     };
-                    testValue = "";
 
                     return returnValue;
                 };
@@ -145,7 +148,6 @@ function setNewPassword() {
                 } else {
                     let hash = support.encryption.encryptPassword(_user.id, res.userPass0);
                     console.log("Password updated!");
-                    // Object.freeze(_user);
                     support.ux.startMenu(_user, EmployeeAccess);
                 };
             }
@@ -187,26 +189,12 @@ function validatePassword() {
                     getUserName();
 
                 } else {
-                    // Object.freeze(_user);
                     support.ux.startMenu(_user, EmployeeAccess);
                 };
             });
         });
 };
 
-function logoff() {
-    console.log("Logging " + _user.firstName + " out...");
-    _user.id = -1;
-    _user.name = "";
-    _user.access = -1;
-    getUserName();
-};
-
-function exitTracker() {
-    console.log("Have a nice day!");
-    support.connection.end();
-};
-
-module.exports = { logoff, exitTracker }
+module.exports = { getUserName };
 
 getUserName();
