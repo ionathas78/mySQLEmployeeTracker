@@ -49,8 +49,6 @@ function validatePassword(employeeId, userPassword, callbackFunction) {
 };
 
 
-
-
 //  Example code from "Hashing in Action: Understanding bcrypt" on auth0.com
 //      https://auth0.com/blog/hashing-in-action-understanding-bcrypt/
 
