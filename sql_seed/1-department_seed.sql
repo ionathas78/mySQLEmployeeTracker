@@ -1,7 +1,11 @@
+DROP DATABASE IF EXISTS EmployeeTracker;
+
 CREATE DATABASE EmployeeTracker;
 USE EmployeeTracker;
 
+DROP TABLE IF EXISTS department;
+
 CREATE TABLE department (
     id INTEGER AUTO_INCREMENT NOT NULL UNIQUE PRIMARY KEY,
-    name VARCHAR(30) NOT NULL
+    name VARCHAR(64) NOT NULL
 );

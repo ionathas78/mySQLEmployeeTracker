@@ -1,8 +1,10 @@
 USE EmployeeTracker;
 
+DROP TABLE IF EXISTS role;
+
 CREATE TABLE role (
     id INTEGER AUTO_INCREMENT NOT NULL UNIQUE PRIMARY KEY,
-    title VARCHAR(30) NOT NULL,
+    title VARCHAR(64) NOT NULL,
     salary DECIMAL DEFAULT 0.00,
     department_id INTEGER
 );

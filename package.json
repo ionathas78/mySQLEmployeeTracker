@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/ionathas78/mySQLEmployeeTracker#readme",
   "dependencies": {
+    "bcrypt": "^4.0.1",
     "console.table": "^0.10.0",
     "inquirer": "^7.1.0",
     "mysql": "^2.18.1"
