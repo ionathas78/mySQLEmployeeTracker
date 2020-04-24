@@ -62,6 +62,7 @@ This module uses bcrypt for passwords, console.table to output table results to 
 Don't forget to run the SQL script files schema.sql and seed.sql in MySQL workbench, in that order, to make and populate your tables before
 you try to access them using the program. It has no table generation capabilities, so it won't run as expected (or, likely, at all) if the
 tables aren't present and seeded.
+You'll also need to configure the connection parameters in **connection.js** to match your system settings.
 
 ![MySQL Workbench Screenshot](./images/mysql_workbench_screenshot.jpg)
 
