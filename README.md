@@ -1,135 +1,101 @@
-# Unit 12 MySQL Homework: Employee Tracker
+# mySQLEmployeeTracker - Employee Management System
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Developers are often tasked with creating interfaces that make it easy for non-developers to view and interact with information stored in databases. Often these interfaces are known as **C**ontent **M**anagement **S**ystems. In this homework assignment, your challenge is to architect and build a solution for managing a company's employees using node, inquirer, and MySQL.
+> Making administrative duties out of this world
 
-## Instructions
+The job was to use a command-line based node.js interface module to create an app that would interface with a MySQL database 
+and provide standard functionality. It was a pretty good showcase for various SQL functions. I ran into some issues with inquirer 
+about three-quarters of the way into the project, though, and my research suggested it might be a known bug. I decided to reinstall 
+and start with fresh code to cover all my bases. That seemed to do the trick, and the app now seems to work as intended.
 
-Design the following database schema containing three tables:
+## Graphic
+![Project Image 0](./images/admin_menu_capture.gif)
 
-![Database Schema](Assets/schema.png)
-
-* **department**:
-
-  * **id** - INT PRIMARY KEY
-  * **name** - VARCHAR(30) to hold department name
-
-* **role**:
-
-  * **id** - INT PRIMARY KEY
-  * **title** -  VARCHAR(30) to hold role title
-  * **salary** -  DECIMAL to hold role salary
-  * **department_id** -  INT to hold reference to department role belongs to
-
-* **employee**:
-
-  * **id** - INT PRIMARY KEY
-  * **first_name** - VARCHAR(30) to hold employee first name
-  * **last_name** - VARCHAR(30) to hold employee last name
-  * **role_id** - INT to hold reference to role employee has
-  * **manager_id** - INT to hold reference to another employee that manager of the current employee. This field may be null if the employee has no manager
-  
-Build a command-line application that at a minimum allows the user to:
-
-  * Add departments, roles, employees
-
-  * View departments, roles, employees
-
-  * Update employee roles
-
-Bonus points if you're able to:
-
-  * Update employee managers
-
-  * View employees by manager
-
-  * Delete departments, roles, and employees
-
-  * View the total utilized budget of a department -- ie the combined salaries of all employees in that department
-
-We can frame this challenge as follows:
+## User Story
 
 ```
-As a business owner
-I want to be able to view and manage the departments, roles, and employees in my company
-So that I can organize and plan my business
+AS A manager
+I WANT an employee administration tool
+SO THAT I can keep track of my workers
 ```
 
-How do you deliver this? Here are some guidelines:
+```
+GIVEN THAT I open the tool in my console
+WHEN I log into the system
+THEN I want basic security measures that will protect my data
+WHEN I have an employee use the system
+THEN I want configurable access profiles based on responsibilities
+WHEN I interface with the tool
+THEN I want to see clean text menus with a coherent navigation flow
+WHEN I read from the attached database
+THEN I want the data formatted legibly on-screen
+WHEN I make changes to the data
+THEN I want those changes to persist
+```
 
-* Use the [MySQL](https://www.npmjs.com/package/mysql) NPM package to connect to your MySQL database and perform queries.
+## Table of Contents
+* [Technologies](#Technologies)
+* [Getting Started](#Getting)
+* [Usage](#Usage)
+* [Questions](#Additional)
+* [Contributing](#Contributing)
+* [License](#License)
 
-* Use [InquirerJs](https://www.npmjs.com/package/inquirer/v/0.2.3) NPM package to interact with the user via the command-line.
+## Technologies
+Node.js\
+MySQL\
+inquirer\
+console.table\
+bcrypt
 
-* Use [console.table](https://www.npmjs.com/package/console.table) to print MySQL rows to the console. There is a built-in version of `console.table`, but the NPM package formats the data a little better for our purposes.
+## Getting Started
+```
+npm install
+```
+This module uses bcrypt for passwords, console.table to output table results to the terminal, inquirer for UI, and mysql for database access.
 
-* You may wish to have a separate file containing functions for performing specific SQL queries you'll need to use. Could a constructor function or a class be helpful for organizing these?
+```
+ DROP DATABASE IF EXISTS employee_tracker_db;
+ CREATE DATABASE employee_tracker_db;
+```
+Don't forget to run the SQL script files schema.sql and seed.sql in MySQL workbench, in that order, to make and populate your tables before
+you try to access them using the program. It has no table generation capabilities, so it won't run as expected (or, likely, at all) if the
+tables aren't present and seeded.
 
-* You will need to perform a variety of SQL JOINS to complete this assignment, and it's recommended you review the week's activities if you need a refresher on this.
+![MySQL Workbench Screenshot](./images/mysql_workbench_screenshot.jpg)
 
-![Employee Tracker](Assets/employee-tracker.gif)
+## Usage
 
-### Hints
+```
+node employeeTracker.js
+```
 
-* You may wish to include a `seed.sql` file to pre-populate your database. This will make development of individual features much easier.
+![Project Usage Image 0](./images/login.capture.gif)
 
-* Focus on getting the basic functionality completed before working on more advanced features.
+This app doesn't use command line parameters. It expects to find a copy of the employee_tracker_db accessible on PORT 3306 (MySQL).
+The program has different permissions for different user access levels, so you'll need to log in as 'admin' to see all its features. 
+None of the employees in the seed file have passwords specified, so the program will prompt you to enter and confirm a password 
+the first time you log in. Be aware that passwords are stored and read from the DB as a bcrypt hash, so you can't edit password values 
+directly except to delete them.
+The program is strictly intended as an example of functionality, so the options you'll find in the different menus are bare bones. 
+You can add a department, role, or employee through the Administrators menu. The Managers menu lets you update an employee's role. 
+The Employees menu is basically a report menu in this demo, letting you print tables to the screen. 
 
-* Review the week's activities for a refresher on MySQL.
-
-* Check out [SQL Bolt](https://sqlbolt.com/) for some extra MySQL help.
-
-## Minimum Requirements
-
-* Functional application.
-
-* GitHub repository with a unique name and a README describing the project.
-
-* The command-line application should allow users to:
-
-  * Add departments, roles, employees
-
-  * View departments, roles, employees
-
-  * Update employee roles
-
-## Bonus
-
-* The command-line application should allow users to:
-
-  * Update employee managers
-
-  * View employees by manager
-
-  * Delete departments, roles, and employees
-
-  * View the total utilized budget of a department -- ie the combined salaries of all employees in that department
-
-## Commit Early and Often
-
-One of the most important skills to master as a web developer is version control. Building the habit of committing via Git is important for two reasons:
-
-* Your commit history is a signal to employers that you are actively working on projects and learning new skills.
-
-* Your commit history allows you to revert your codebase in the event that you need to return to a previous state.
-
-Follow these guidelines for committing:
-
-* Make single-purpose commits for related changes to ensure a clean, manageable history. If you are fixing two issues, make two commits.
-
-* Write descriptive, meaningful commit messages so that you and anyone else looking at your repository can easily understand its history.
-
-* Don't commit half-done work, for the sake of your collaborators (and your future self!).
-
-* Test your application before you commit to ensure functionality at every step in the development process.
-
-We would like you to have well over 200 commits by graduation, so commit early and often!
+![Project Usage Image 1](./images/employee_bymanager_screenshot.jpg)
+![Project Usage Image 2](./images/admin_menu_capture.jpg)
 
 
-## Submission on BCS
+## Additional Questions
+Contact me by email or DM if you have any questions.
 
-You are required to submit the following:
+## Contributing
+Contact us for guidelines on submitting contributions.
 
-* The URL of the GitHub repository
+## License
+This project is licensed under the The MIT License.
 
-- - -
-© 2019 Trilogy Education Services, a 2U, Inc. brand. All Rights Reserved.
+
+![User Avatar Picture](https://avatars1.githubusercontent.com/u/61706660?v=4)  
+### ionathas78
+
+This file generated on 4/23/2020 by goodReadMeGenerator, copyright 2020 Jonathan Andrews
