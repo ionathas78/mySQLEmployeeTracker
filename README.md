@@ -71,7 +71,7 @@ tables aren't present and seeded.
 node employeeTracker.js
 ```
 
-![Project Usage Image 0](./images/login.capture.gif)
+![Project Usage Image 0](./images/login_capture.gif)
 
 This app doesn't use command line parameters. It expects to find a copy of the employee_tracker_db accessible on PORT 3306 (MySQL).
 The program has different permissions for different user access levels, so you'll need to log in as 'admin' to see all its features. 
@@ -83,7 +83,7 @@ You can add a department, role, or employee through the Administrators menu. The
 The Employees menu is basically a report menu in this demo, letting you print tables to the screen. 
 
 ![Project Usage Image 1](./images/employee_bymanager_screenshot.jpg)
-![Project Usage Image 2](./images/admin_menu_capture.jpg)
+![Project Usage Image 2](./images/add_employee_screenshot.jpg)
 
 
 ## Additional Questions
