@@ -9,7 +9,7 @@ about three-quarters of the way into the project, though, and my research sugges
 and start with fresh code to cover all my bases. That seemed to do the trick, and the app now seems to work as intended.
 
 ## Graphic
-![Project Image 0](./images/admin_menu_capture.gif)
+![Adding an Employee GIF](./images/admin_menu_capture.gif)
 
 ## User Story
 
@@ -71,7 +71,7 @@ tables aren't present and seeded.
 node employeeTracker.js
 ```
 
-![Project Usage Image 0](./images/login_capture.gif)
+![Login Screenshot](./images/login_capture.gif)
 
 This app doesn't use command line parameters. It expects to find a copy of the employee_tracker_db accessible on PORT 3306 (MySQL).
 The program has different permissions for different user access levels, so you'll need to log in as 'admin' to see all its features. 
@@ -82,8 +82,8 @@ The program is strictly intended as an example of functionality, so the options 
 You can add a department, role, or employee through the Administrators menu. The Managers menu lets you update an employee's role. 
 The Employees menu is basically a report menu in this demo, letting you print tables to the screen. 
 
-![Project Usage Image 1](./images/employee_bymanager_screenshot.jpg)
-![Project Usage Image 2](./images/add_employee_screenshot.jpg)
+![By Manager Employee Report](./images/employee_bymanager_screenshot.jpg)
+![Adding an Employee Screenshot](./images/add_employee_screenshot.jpg)
 
 
 ## Additional Questions
