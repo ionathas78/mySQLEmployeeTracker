@@ -40,6 +40,7 @@ THEN I want those changes to persist
 * [Questions](#Additional)
 * [Contributing](#Contributing)
 * [License](#License)
+* [Content Advisory](#Content)
 
 ## Technologies
 Node.js\
@@ -94,6 +95,8 @@ Contact us for guidelines on submitting contributions.
 ## License
 This project is licensed under the The MIT License.
 
+## Content Advisory
+Star Trek and all its related characters and properties belong to [CBS Studios Inc](https://www.startrek.com).
 
 ![User Avatar Picture](https://avatars1.githubusercontent.com/u/61706660?v=4)  
 ### ionathas78
